@@ -1,0 +1,14 @@
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "username": "testUser",
+  "password": "Pass1234",
+  "firstName": "User",
+  "lastName": "Test",
+  "email": "test@test.com",
+  "country": "Colombia",
+  "phonePrefix": "+57",
+  "phone": "1233249922",
+  "dateBirth": "2025-01-01"
+}

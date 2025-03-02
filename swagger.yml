@@ -239,6 +239,8 @@ components:
           type: string
         dateBirth:
           type: string
+        role:
+          type: string
 
     userPostResponse:
       type: object
@@ -267,6 +269,8 @@ components:
           type: string
         dateBirth:
           type: string
+        role:
+          type: string
 
     BodyUserPut:
       type: object
@@ -290,6 +294,8 @@ components:
           type: string
         dateBirth:
           type: string
+        role:
+          type: string
 
     BodyUserPatch:
       type: object
@@ -311,4 +317,6 @@ components:
         phone:
           type: string
         dateBirth:
+          type: string
+        role:
           type: string
