@@ -1,0 +1,314 @@
+openapi: 3.0.3
+info:
+  title: User Management API
+  description: This API provides the necessary operations to manage system users, including CREATE, READ, UPDATE, and DELETE (CRUD).
+  version: 0.0.4
+servers:
+  - url: https://myapi/api/v1
+tags:
+  - name: Users
+    description: This endpoint handles everything related to user information.
+paths:
+  /users:
+    post:
+      tags:
+        - Users
+      summary: Insert user information.
+      parameters:
+        - $ref: '#/components/parameters/token'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BodyUserPost'
+      responses:
+        201:
+          description: User successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userPostResponse'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      tags:
+        - Users
+      summary: Get a list of users
+      description: Returns a paginated list of users with an optional filter by username.
+      parameters:
+        - $ref: '#/components/parameters/token'
+        - name: page
+          in: query
+          description: Page number for pagination
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          description: Number of users per page
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: username
+          in: query
+          description: Filter by username (exact match)
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: List of users successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  currentPage:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  totalUsers:
+                    type: integer
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/userGetResponse'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /users/{uuid}:
+    get:
+      tags:
+        - Users
+      summary: Retrieve user information
+      parameters:
+        - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/uuid'
+      responses:
+        200:
+          description: User information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userGetResponse'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    put:
+      tags:
+        - Users
+      summary: Update user information
+      parameters:
+        - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/uuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BodyUserPut'
+      responses:
+        200:
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userGetResponse'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    patch:
+      tags:
+        - Users
+      summary: Partially update user information
+      parameters:
+        - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/uuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BodyUserPatch'
+      responses:
+        200:
+          description: User information partially updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userGetResponse'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      tags:
+        - Users
+      summary: Delete a user
+      parameters:
+        - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/uuid'
+      responses:
+        204:
+          description: User successfully deleted
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+components:
+  responses:
+    Unauthorized:
+      description: Unauthorized access
+    NotFound:
+      description: Resource not found
+    BadRequest:
+      description: Invalid input or missing required fields
+    ServerError:
+      description: Internal server error
+
+  parameters:
+    token:
+      name: Authorization
+      in: header
+      description: Bearer authentication token
+      required: true
+      schema:
+        type: string
+    uuid:
+      name: uuid
+      in: path
+      description: Unique user identifier
+      required: true
+      schema:
+        type: string
+
+  schemas:
+    BodyUserPost:
+      type: object
+      required: [username, password, firstName, lastName, email, country, phonePrefix, phone, dateBirth]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        country:
+          type: string
+        phonePrefix:
+          type: string
+        phone:
+          type: string
+        dateBirth:
+          type: string
+
+    userPostResponse:
+      type: object
+      properties:
+        uuid:
+          type: string
+
+    userGetResponse:
+      type: object
+      properties:
+        uuid:
+          type: string
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        country:
+          type: string
+        phonePrefix:
+          type: string
+        phone:
+          type: string
+        dateBirth:
+          type: string
+
+    BodyUserPut:
+      type: object
+      required: [username, password, firstName, lastName, email, country, phonePrefix, phone, dateBirth]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        country:
+          type: string
+        phonePrefix:
+          type: string
+        phone:
+          type: string
+        dateBirth:
+          type: string
+
+    BodyUserPatch:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        country:
+          type: string
+        phonePrefix:
+          type: string
+        phone:
+          type: string
+        dateBirth:
+          type: string
