@@ -18,7 +18,6 @@
         <lombok.version>1.18.36</lombok.version>
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
     </properties>
-
     <dependencyManagement>
         <dependencies>
             <dependency>

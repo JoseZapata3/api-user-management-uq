@@ -7,7 +7,7 @@ import java.util.Collection;
 
 public record UserRegistrationResponse(
         @NotBlank
-        String uuid,
+        Long id,
         Role role
 ) {
 }

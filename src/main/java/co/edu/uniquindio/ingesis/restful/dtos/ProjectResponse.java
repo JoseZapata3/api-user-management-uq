@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 
 public record ProjectResponse(
         @NotBlank(message = "The project ID is required.")
-        String projectId,
+        Long id,
 
         @Size(min = 3, max = 50, message = "The title must have between 3 and 50 characters.")
         @NotBlank(message = "The title is required.")
@@ -17,7 +17,6 @@ public record ProjectResponse(
         @NotBlank(message = "The source code is required.")
         String code,
 
-        @NotBlank(message = "The creation date is required.")
         String createdAt
 ) {
 }

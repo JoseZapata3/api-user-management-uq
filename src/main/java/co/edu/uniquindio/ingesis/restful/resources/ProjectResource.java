@@ -18,6 +18,7 @@ import java.util.UUID;
 @Consumes(MediaType.APPLICATION_JSON)
 @RequiredArgsConstructor
 public class ProjectResource {
+
     final IProjectService projectService;
 
     @POST
