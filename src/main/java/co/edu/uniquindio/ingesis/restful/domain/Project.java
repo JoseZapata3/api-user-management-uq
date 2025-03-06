@@ -12,7 +12,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "project")
+@Table(name = "projects")
 @Getter
 @Setter
 public class Project extends PanacheEntity {

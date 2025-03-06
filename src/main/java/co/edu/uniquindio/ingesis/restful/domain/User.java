@@ -13,10 +13,9 @@ import org.hibernate.validator.constraints.UUID;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @Getter
 @Setter
-
 public class User extends PanacheEntity {
 
     @Size(min=4,max = 20,message = "The username must have a minimum of 4 characters and a maximum of 20 characters.")
