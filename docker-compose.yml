@@ -21,7 +21,7 @@ services:
       QUARKUS_DATASOURCE_PASSWORD: postgres
       QUARKUS_HIBERNATE_ORM_DATABASE_GENERATION: drop-and-create
     ports:
-      - "8080:8080"
+      - "8087:8087"
     depends_on:
       - postgres
 volumes:
