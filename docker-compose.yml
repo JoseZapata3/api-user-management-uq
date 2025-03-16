@@ -6,7 +6,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: mydatabase
     ports:
-      - "5432:5432"
+      - "1234:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
   app:
@@ -21,7 +21,7 @@ services:
       QUARKUS_DATASOURCE_PASSWORD: postgres
       QUARKUS_HIBERNATE_ORM_DATABASE_GENERATION: drop-and-create
     ports:
-      - "8087:8087"
+      - "8087:8080"
     depends_on:
       - postgres
 volumes:

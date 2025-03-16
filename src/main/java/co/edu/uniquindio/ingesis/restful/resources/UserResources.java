@@ -1,5 +1,6 @@
 package co.edu.uniquindio.ingesis.restful.resources;
 
+import co.edu.uniquindio.ingesis.restful.dtos.UserPartialUpdateRequest;
 import co.edu.uniquindio.ingesis.restful.dtos.UserRegistrationRequest;
 import co.edu.uniquindio.ingesis.restful.dtos.UserResponse;
 import co.edu.uniquindio.ingesis.restful.services.IUserService;
@@ -34,9 +35,37 @@ public class UserResources {
     }
 
     @GET
-    public Response getAll() {
-        List<UserResponse> users = userService.getAllUsers();
+    public Response getAll(@QueryParam("page") @DefaultValue("0") int page,
+                           @QueryParam("size") @DefaultValue("10") int size) {
+        List<UserResponse> users = userService.getAllUsers(page, size);
+
+        if (users.isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
         return Response.ok(users).build();
     }
+
+    @PUT
+    @Path("/{id}")
+    public Response updateUser(@PathParam("id") Long id, @Valid UserRegistrationRequest request) {
+        UserResponse updatedUser = userService.updateUser(id, request);
+        return Response.ok(updatedUser).build();
+    }
+
+    @PATCH
+    @Path("/{id}")
+    public Response partialUpdateUser(@PathParam("id") Long id, UserPartialUpdateRequest request) {
+        UserResponse updatedUser = userService.partialUpdateUser(id, request);
+        return Response.ok(updatedUser).build();
+    }
+
+    @DELETE
+    @Path("/{id}")
+    public Response deleteUser(@PathParam("id") Long id) {
+        userService.deleteUser(id);
+        return Response.noContent().build();
+    }
+
 
 }

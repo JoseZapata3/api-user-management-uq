@@ -2,10 +2,7 @@ package co.edu.uniquindio.ingesis.restful.domain;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.UUID;
@@ -38,11 +35,8 @@ public class User extends PanacheEntity {
     private String phonePrefix;
     @NotBlank(message = "The phone is required.")
     private String phone;
-    @Pattern(regexp = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$", message = "The date must be in the format YYYY-MM-DD (e.g., 2025-03-01).")
-    @NotBlank(message = "The date of birth is required")
+    @NotNull(message = "The date of birth is required.")
     private LocalDate dateBirth;
-    @NotBlank
+    @NotNull(message = "The role is required.")
     private Role role;
-
-
 }
