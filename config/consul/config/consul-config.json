@@ -1,0 +1,13 @@
+{
+  "service": {
+    "name": "quarkus-app",
+    "port": 8087,
+    "checks": [
+      {
+        "http": "http://localhost:8087/q/health",
+        "interval": "10s",
+        "timeout": "5s"
+      }
+    ]
+  }
+}
