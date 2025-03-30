@@ -22,6 +22,11 @@ services:
       QUARKUS_HIBERNATE_ORM_DATABASE_GENERATION: drop-and-create
     ports:
       - "8087:8080"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     depends_on:
       - postgres
   consul:
