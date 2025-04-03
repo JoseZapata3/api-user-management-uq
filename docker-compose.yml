@@ -22,6 +22,8 @@ services:
       QUARKUS_HIBERNATE_ORM_DATABASE_GENERATION: drop-and-create
     ports:
       - "8087:8080"
+    volumes:
+      - chronicle_logs:/var/log/chronicle
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
       interval: 30s
@@ -37,5 +39,28 @@ services:
     volumes:
       - ./config/consul/config:/etc/consul.d # Monta el directorio de configuración
     command: agent -server -bootstrap-expect=1 -ui -client=0.0.0.0 -config-dir=/etc/consul.d
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.1
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+  logstash:
+      image: docker.elastic.co/logstash/logstash:8.5.1
+      volumes:
+        - ./config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+        - chronicle_logs:/var/log/chronicle
+      depends_on:
+        - elasticsearch
+      ports:
+        - "5044:5044"
+  kibana:
+      image: docker.elastic.co/kibana/kibana:8.5.1
+      ports:
+        - "5601:5601"
+      depends_on:
+        - elasticsearch
 volumes:
   postgres_data:
+  chronicle_logs:
