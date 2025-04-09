@@ -31,7 +31,6 @@ public record UserRegistrationRequest(
         String phonePrefix,
         @NotBlank(message = "The phone is required.")
         String phone,
-        @Pattern(regexp = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$", message = "The date must be in the format YYYY-MM-DD (e.g., 2025-03-01).")
         @NotBlank(message = "The date of birth is required")
         String dateBirth,
         Role role
