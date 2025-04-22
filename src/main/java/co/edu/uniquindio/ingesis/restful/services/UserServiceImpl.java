@@ -1,23 +1,32 @@
 package co.edu.uniquindio.ingesis.restful.services;
 
+import co.edu.uniquindio.ingesis.restful.domain.ActivationCode;
 import co.edu.uniquindio.ingesis.restful.domain.User;
-import co.edu.uniquindio.ingesis.restful.dtos.UserPartialUpdateRequest;
-import co.edu.uniquindio.ingesis.restful.dtos.UserRegistrationRequest;
-import co.edu.uniquindio.ingesis.restful.dtos.UserRegistrationResponse;
-import co.edu.uniquindio.ingesis.restful.dtos.UserResponse;
+import co.edu.uniquindio.ingesis.restful.dtos.*;
 import co.edu.uniquindio.ingesis.restful.logging.AuditLog;
+import co.edu.uniquindio.ingesis.restful.mappers.ActivationCodeMapper;
 import co.edu.uniquindio.ingesis.restful.mappers.UserMapper;
+import co.edu.uniquindio.ingesis.restful.repositories.ActivationCodeRepositoryImpl;
 import co.edu.uniquindio.ingesis.restful.repositories.IUserRepository;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
+import java.nio.charset.StandardCharsets;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -26,7 +35,16 @@ public class UserServiceImpl implements IUserService {
 
     final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     final UserMapper userMapper;
+    final ActivationCodeMapper activationCodeMapper;
     final IUserRepository userRepository;
+    final ActivationCodeRepositoryImpl activationCodeRepository;
+
+    @Inject
+    @Channel("activation-emitter")
+    Emitter<byte[]> activationRequestEmitter;
+
+    @Inject
+    Jsonb jsonb;
 
     @Transactional
     public UserRegistrationResponse createUser(UserRegistrationRequest request) {
@@ -37,6 +55,49 @@ public class UserServiceImpl implements IUserService {
 
         userRepository.persist(user);
         AuditLog.logAction(user.getUsername(),"User created: Username='{}'", user.getUsername());
+
+        String code = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(15);
+
+        ActivationCodeCreation acc = new ActivationCodeCreation(code, expirationTime, false, user);
+        ActivationCode activationCode = activationCodeMapper.parseOf(acc);
+        activationCodeRepository.persist(activationCode);
+
+
+        log.info("Activation code generated and persisted for user ID: {}", user.id);
+
+        try {
+            ActivationMessagePayload payload = new ActivationMessagePayload(
+                    user.getEmail(),
+                    activationCode.getCode(),
+                    user.getFirstName()
+            );
+
+            log.info("Sending activation request: {}", payload);
+
+            String jsonPayload = jsonb.toJson(payload);
+            byte[] messageBytes = jsonPayload.getBytes(StandardCharsets.UTF_8);
+
+            log.info("Sending jsonPayload request: {}", jsonPayload);
+//           log.info("Sending messageBytes request: {}", messageBytes);
+
+            activationRequestEmitter.send(messageBytes)
+                    .whenComplete((success, failure) -> { // Callback para saber si funcionó
+                        if (failure != null) {
+                            // Loguear el problema. No falles la creación del usuario,
+                            log.error("Failed to send activation message to Pulsar for user {}: {}",
+                                    user.getEmail(), failure.getMessage(), failure);
+                        } else {
+                            // El mensaje fue aceptado por Pulsar.
+                            log.info("Activation message successfully sent to Pulsar for user {}", user.getEmail());
+                        }
+                    });
+
+        } catch (Exception e) {
+            // Captura cualquier error durante la creación/envío del mensaje
+            log.error("Error preparing or sending Pulsar message for user {}: {}",
+                    user.getEmail(), e.getMessage(), e);
+        }
 
         return userMapper.toUserRegistrationResponse(user);
     }

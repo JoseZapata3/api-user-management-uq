@@ -5,7 +5,7 @@ import co.edu.uniquindio.ingesis.restful.domain.User;
 import co.edu.uniquindio.ingesis.restful.dtos.UserRegistrationRequest;
 import co.edu.uniquindio.ingesis.restful.dtos.UserRegistrationResponse;
 import co.edu.uniquindio.ingesis.restful.dtos.UserResponse;
-import jakarta.enterprise.context.Dependent;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;

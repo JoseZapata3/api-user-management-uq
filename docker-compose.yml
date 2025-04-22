@@ -15,7 +15,6 @@ services:
           memory: 512M
         reservations:
           memory: 256M
-
   app:
     image: my-quarkus-app:latest
     build:
@@ -27,6 +26,7 @@ services:
       QUARKUS_DATASOURCE_USERNAME: postgres
       QUARKUS_DATASOURCE_PASSWORD: postgres
       QUARKUS_HIBERNATE_ORM_DATABASE_GENERATION: drop-and-create
+      QUARKUS_PULSAR_SERVICE_URL: pulsar://pulsar:6650
     ports:
       - "8087:8080"
     volumes:
@@ -37,7 +37,10 @@ services:
       timeout: 10s
       retries: 3
     depends_on:
-      - postgres
+      postgres:
+        condition: service_started
+      pulsar:
+        condition: service_healthy
     deploy:
       resources:
         limits:
@@ -92,7 +95,6 @@ services:
           memory: 512M
         reservations:
           memory: 256M
-
   kibana:
     image: docker.elastic.co/kibana/kibana:8.5.1
     ports:
@@ -107,7 +109,45 @@ services:
           memory: 512M
         reservations:
           memory: 256M
+  pulsar:
+    image: apachepulsar/pulsar:3.2.0
+    container_name: pulsar-standalone
+    ports:
+      - "6650:6650"
+      - "8081:8080"
+    command: >
+      bash -c "bin/pulsar standalone --advertised-address localhost --no-functions-worker -nss"
+    volumes:
+    - pulsar_data:/pulsar/data
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/admin/v2/brokers/healthcheck" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  notification-service:
+    build:
+      context: E:\Projects\user-management\notification-service\notification-service
+      dockerfile: Dockerfile
+    container_name: notification_service
+    environment:
+      MP_MESSAGING_CONNECTOR_SMALLRYE_PULSAR_SERVICEURL: pulsar://pulsar:6650
+      QUARKUS_MAILER_USERNAME: "jazapatao_1@uqvirtual.edu.co"
+      QUARKUS_MAILER_PASSWORD: "edwwztydbbdfjogy"
+    ports:
+      - "8088:8080"
+    depends_on:
+      pulsar:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
 
 volumes:
   postgres_data:
   chronicle_logs:
+  pulsar_data:

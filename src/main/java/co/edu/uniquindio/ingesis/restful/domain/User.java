@@ -37,6 +37,11 @@ public class User extends PanacheEntity {
     private String phone;
     @NotNull(message = "The date of birth is required.")
     private LocalDate dateBirth;
+    @Column(nullable = false)
+    private boolean activeAccount;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ActivationCode activationCode;
     @NotNull(message = "The role is required.")
     private Role role;
+
 }
