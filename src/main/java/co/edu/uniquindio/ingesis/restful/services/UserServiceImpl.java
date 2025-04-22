@@ -84,11 +84,9 @@ public class UserServiceImpl implements IUserService {
             activationRequestEmitter.send(messageBytes)
                     .whenComplete((success, failure) -> { // Callback para saber si funcionó
                         if (failure != null) {
-                            // Loguear el problema. No falles la creación del usuario,
                             log.error("Failed to send activation message to Pulsar for user {}: {}",
                                     user.getEmail(), failure.getMessage(), failure);
                         } else {
-                            // El mensaje fue aceptado por Pulsar.
                             log.info("Activation message successfully sent to Pulsar for user {}", user.getEmail());
                         }
                     });

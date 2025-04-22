@@ -128,13 +128,12 @@ services:
 
   notification-service:
     build:
-      context: E:\Projects\user-management\notification-service\notification-service
+      context: /home/jose.zapata/Documents/University/APIs-development/restful-notifications
       dockerfile: Dockerfile
     container_name: notification_service
+    user: root
     environment:
       MP_MESSAGING_CONNECTOR_SMALLRYE_PULSAR_SERVICEURL: pulsar://pulsar:6650
-      QUARKUS_MAILER_USERNAME: "jazapatao_1@uqvirtual.edu.co"
-      QUARKUS_MAILER_PASSWORD: "edwwztydbbdfjogy"
     ports:
       - "8088:8080"
     depends_on:
@@ -146,7 +145,6 @@ services:
           memory: 256M
         reservations:
           memory: 128M
-
 volumes:
   postgres_data:
   chronicle_logs:
