@@ -25,36 +25,71 @@ public class StepDefinitions {
 
     @When("envío una solicitud POST a {string} con el cuerpo:")
     public void envio_post_con_body(String endpoint, String body) {
-        response = RestAssured
-                .given().contentType("application/json")
-                .body(body)
-                .when().post(baseUrl + endpoint);
-        if(endpoint.equals("/auth/login")) {
+        try {
+            response = RestAssured
+                    .given().contentType("application/json")
+                    .body(body)
+                    .when().post(baseUrl + endpoint);
+        } catch (Exception e) {
+            WireMockHelper.startWireMockIfNotRunning();
+            baseUrl = WireMockHelper.getMockBaseUrl();
+            response = RestAssured
+                    .given().contentType("application/json")
+                    .body(body)
+                    .when().post(baseUrl + endpoint);
+        }
+        if (endpoint.equals("/auth/login")) {
             this.token = response.jsonPath().getString("token");
         }
     }
 
     @When("envío una solicitud GET a {string}")
     public void envio_get(String endpoint) {
-        response = RestAssured.given().header("Authorization", "Bearer " + this.token).get(baseUrl + endpoint);
+        try{
+            response = RestAssured.given().header("Authorization", "Bearer " + this.token).get(baseUrl + endpoint);
+        }catch(Exception e){
+            WireMockHelper.startWireMockIfNotRunning();
+            baseUrl = WireMockHelper.getMockBaseUrl();
+            response = RestAssured
+                    .given().header("Authorization", "Bearer " + this.token)
+                    .get(baseUrl + endpoint);
+        }
     }
 
     @When("envío una solicitud PUT a {string} con el cuerpo:")
     public void envio_put_con_body(String endpoint, String body) {
-        response = RestAssured
-                .given().contentType("application/json")
-                .body(body)
-                .when().put(baseUrl + endpoint);
+        try{
+            response = RestAssured
+                    .given().contentType("application/json")
+                    .body(body)
+                    .when().put(baseUrl + endpoint);
+        } catch (Exception e) {
+            WireMockHelper.startWireMockIfNotRunning();
+            baseUrl = WireMockHelper.getMockBaseUrl();
+            response = RestAssured
+                    .given().contentType("application/json")
+                    .body(body)
+                    .when().put(baseUrl + endpoint);
+        }
     }
 
     @When("envío una solicitud DELETE a {string}")
     public void envio_delete(String endpoint) {
-        System.out.println("my url"+ baseUrl + endpoint+"/"+this.userId);
-        response = RestAssured
-                .given()
-                .header("Authorization", "Bearer " + this.token)
-                .when()
-                .delete(baseUrl + endpoint+"/"+this.userId);
+        try {
+            System.out.println("my url"+ baseUrl + endpoint+"/"+this.userId);
+            response = RestAssured
+                    .given()
+                    .header("Authorization", "Bearer " + this.token)
+                    .when()
+                    .delete(baseUrl + endpoint+"/"+this.userId);
+        } catch (Exception e) {
+            WireMockHelper.startWireMockIfNotRunning();
+            baseUrl = WireMockHelper.getMockBaseUrl();
+            response = RestAssured
+                    .given()
+                    .header("Authorization", "Bearer " + this.token)
+                    .delete(baseUrl + endpoint+"/"+this.userId);
+        }
     }
 
 
