@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 
 import java.util.List;
-import java.util.UUID;
 
 @Path("/api/v1/users")
 @Produces(MediaType.APPLICATION_JSON)

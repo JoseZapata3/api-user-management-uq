@@ -6,8 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 public record UserRegistrationRequest(

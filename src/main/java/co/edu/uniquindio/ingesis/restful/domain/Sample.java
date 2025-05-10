@@ -6,8 +6,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-import java.time.LocalDateTime;
-
 public class Sample extends PanacheEntity {
     @NotBlank(message = "The title is required.")
     private String title;

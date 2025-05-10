@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
 import java.nio.charset.StandardCharsets;
 
 import java.time.LocalDate;

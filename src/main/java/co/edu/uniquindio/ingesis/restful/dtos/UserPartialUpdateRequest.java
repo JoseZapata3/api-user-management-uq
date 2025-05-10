@@ -2,7 +2,6 @@ package co.edu.uniquindio.ingesis.restful.dtos;
 
 import co.edu.uniquindio.ingesis.restful.domain.Role;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
