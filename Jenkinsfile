@@ -1,13 +1,13 @@
 pipeline{
     agent any
-    tools{
-        maven 'maven3'
-        jdk 'jdk21'
+    tools {
+        jdk 'jdk-21.0.7-oracle-x64'
+        
     }
     stages{
         stage('Clonar repo'){
             steps{
-                git 'https://github.com/JoseZapata3/api-user-management-uq.git'
+                git url: 'https://github.com/JoseZapata3/api-user-management-uq.git', branch: 'main'
             }
         }
         stage('Compilar'){
@@ -18,18 +18,12 @@ pipeline{
         stage('Pruebas'){
             steps{
                 sh 'mvn test'
-                junit 'build/test-results/*.xml'
-            }
-            post {
-                always {
-                    junit '**/target/surefire-reports/*.xml'
-                }
             }
         }
         stage('Calidad de codigo'){
             steps{
                 withSonarQubeEnv('Mi Instancia Sonar'){
-                    sh 'mvn sonar:sonar'
+                    sh "mvn sonar:sonar"
                 }
             }
         }
