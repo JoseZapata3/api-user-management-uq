@@ -63,52 +63,52 @@ services:
         reservations:
           memory: 128M
 
-  # elasticsearch:
-  #   image: docker.elastic.co/elasticsearch/elasticsearch:8.5.1
-  #   environment:
-  #     - discovery.type=single-node
-  #     - xpack.security.enabled=false
-  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-  #   ports:
-  #     - "9200:9200"
-  #   deploy:
-  #     resources:
-  #       limits:
-  #         memory: 1G
-  #       reservations:
-  #         memory: 512M
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.1
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
 
-  # logstash:
-  #   image: docker.elastic.co/logstash/logstash:8.5.1
-  #   volumes:
-  #     - ./config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-  #     - chronicle_logs:/var/log/chronicle
-  #   environment:
-  #     - "LS_JAVA_OPTS=-Xms256m -Xmx256m"
-  #   depends_on:
-  #     - elasticsearch
-  #   ports:
-  #     - "5044:5044"
-  #   deploy:
-  #     resources:
-  #       limits:
-  #         memory: 512M
-  #       reservations:
-  #         memory: 256M
-  # kibana:
-  #   image: docker.elastic.co/kibana/kibana:8.5.1
-  #   ports:
-  #     - "5601:5601"
-  #   depends_on:
-  #     - elasticsearch
-  #   environment:
-  #     - "NODE_OPTIONS=--max-old-space-size=256"
-  #   deploy:
-  #     resources:
-  #       limits:
-  #         memory: 512M
-  #       reservations:
-  #         memory: 256M
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.5.1
+    volumes:
+      - ./config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - chronicle_logs:/var/log/chronicle
+    environment:
+      - "LS_JAVA_OPTS=-Xms256m -Xmx256m"
+    depends_on:
+      - elasticsearch
+    ports:
+      - "5044:5044"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.5.1
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    environment:
+      - "NODE_OPTIONS=--max-old-space-size=256"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
   pulsar:
     image: apachepulsar/pulsar:3.2.0
     container_name: pulsar-standalone

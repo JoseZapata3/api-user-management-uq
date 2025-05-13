@@ -11,7 +11,6 @@ import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.UUID;
 
 @Path("/api/v1/projects")
 @Produces(MediaType.APPLICATION_JSON)
@@ -29,27 +28,28 @@ public class ProjectResource {
 
     @GET
     @Path("/{id}")
-    public Response getById(@PathParam("id") UUID id) {
+    public Response getById(@PathParam("id") Long id) {
         var response = projectService.getProjectById(id);
         return Response.ok(response).build();
     }
 
     @GET
-    public Response getAll() {
-        List<ProjectResponse> projects = projectService.getAllProjects();
+    public Response getAll(@QueryParam("page") @DefaultValue("0") int page,
+                            @QueryParam("size") @DefaultValue("10") int size) {
+        List<ProjectResponse> projects = projectService.getAllProjects(page, size);
         return Response.ok(projects).build();
     }
 
     @PUT
     @Path("/{id}")
-    public Response update(@PathParam("id") UUID id, @Valid ProjectUpdateRequest request) {
+    public Response update(@PathParam("id") Long id, @Valid ProjectUpdateRequest request) {
         var response = projectService.updateProject(id, request);
         return Response.ok(response).build();
     }
 
     @DELETE
     @Path("/{id}")
-    public Response delete(@PathParam("id") UUID id) {
+    public Response delete(@PathParam("id") Long id) {
         projectService.deleteProject(id);
         return Response.noContent().build();
     }

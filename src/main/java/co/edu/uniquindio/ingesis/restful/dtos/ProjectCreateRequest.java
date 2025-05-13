@@ -1,6 +1,5 @@
 package co.edu.uniquindio.ingesis.restful.dtos;
 
-import co.edu.uniquindio.ingesis.restful.domain.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -12,5 +11,6 @@ public record ProjectCreateRequest(
         String description,
         @NotBlank(message = "The source code is required.")
         String code,
-        User owner) {
+        Long ownerID
+){
 }

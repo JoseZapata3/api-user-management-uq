@@ -25,5 +25,4 @@ public class Project extends PanacheEntity {
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner;
-
 }
