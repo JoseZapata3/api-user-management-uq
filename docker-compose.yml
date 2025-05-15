@@ -117,8 +117,6 @@ services:
       - "8081:8080"
     command: >
       bash -c "bin/pulsar standalone --advertised-address localhost --no-functions-worker -nss"
-    volumes:
-    - pulsar_data:/pulsar/data
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/admin/v2/brokers/healthcheck" ]
       interval: 30s
