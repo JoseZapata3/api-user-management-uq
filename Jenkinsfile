@@ -18,11 +18,10 @@ pipeline {
             }
         }
 
-        stage('Levantar entorno') {
+        stage('Levantar servicios') {
             steps {
-                sh 'docker-compose up -d --build'
-                echo "Esperando que los servicios estén arriba..."
-                sh 'sleep 60' // O mejor aún, implementar verificación de healthchecks
+                sh 'docker-compose -f docker-compose.yml up -d --build'
+                sh 'sleep 60'
             }
         }
 
@@ -53,8 +52,8 @@ pipeline {
 
     post {
         always {
-            echo 'Limpiando contenedores...'
-            sh 'docker-compose down -v'
+            echo "Apagando entorno de servicios"
+            sh 'docker-compose -f docker-compose.yml down --volumes --remove-orphans'
         }
     }
 }
