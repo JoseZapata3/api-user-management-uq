@@ -18,6 +18,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -60,5 +63,26 @@ public class CommentServiceImpl implements ICommentService {
         commentRepository.persist(comment);
         log.info("Created comment for {}", request);
         return commentMapper.toCommentResponse(comment);
+    }
+
+    @Override
+    @Transactional
+    public CommentResponse getCommentById(Long id) {
+        log.info("Getting comment for {}", id);
+        Comment comment = commentRepository.findById(id);
+        if (comment == null) {
+            throw new IllegalArgumentException("Comment not found");
+        }
+        return commentMapper.toCommentResponse(comment);
+    }
+
+    @Override
+    @Transactional
+    public List<CommentResponse> getCommentsByProjectId(int page, int size, Long projectId) {
+        log.info("Getting comments for {}", projectId);
+        return commentRepository.findByProjectId(projectId,page,size)
+                .stream()
+                .map(commentMapper::toCommentResponse)
+                .collect(Collectors.toList());
     }
 }
