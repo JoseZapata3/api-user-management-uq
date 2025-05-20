@@ -30,5 +30,4 @@ public class CommentResource {
         return Response.status(Response.Status.CREATED).entity(response).build();
     }
 
-
 }
