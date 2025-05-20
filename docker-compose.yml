@@ -169,8 +169,6 @@ services:
 
 volumes:
   postgres_data:
-  chronicle_logs:
-  pulsar_data:
   jenkins_home:
   sonarqube_db:
   sonarqube_data:

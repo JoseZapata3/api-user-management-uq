@@ -3,7 +3,9 @@ package co.edu.uniquindio.ingesis.restful.services;
 import co.edu.uniquindio.ingesis.restful.dtos.*;
 import co.edu.uniquindio.ingesis.restful.mappers.ProjectMapper;
 import co.edu.uniquindio.ingesis.restful.domain.Project;
+import co.edu.uniquindio.ingesis.restful.domain.ProjectType;
 import co.edu.uniquindio.ingesis.restful.domain.User;
+import co.edu.uniquindio.ingesis.restful.domain.Role;
 import co.edu.uniquindio.ingesis.restful.repositories.IProjectRepository;
 import co.edu.uniquindio.ingesis.restful.repositories.IUserRepository;
 import co.edu.uniquindio.ingesis.restful.utils.CompilerJavaUtil;
@@ -37,6 +39,13 @@ public class ProjectServiceImpl implements IProjectService{
         }
         
         project.setOwner(user);
+  
+        if( user.getRole() == Role.STUDENT){
+            project.setType(ProjectType.PROJECT);
+        }else{
+            project.setType(ProjectType.SAMPLE);
+        }
+
         projectRepository.persist(project);
         return projectMapper.toResponse(project);
     }
