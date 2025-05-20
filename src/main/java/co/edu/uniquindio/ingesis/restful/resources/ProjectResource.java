@@ -53,4 +53,12 @@ public class ProjectResource {
         projectService.deleteProject(id);
         return Response.noContent().build();
     }
+
+    @POST
+    @Path("/run/{id}")
+    public Response run(@PathParam("id") Long id) {
+        var response = projectService.runProject(id);
+        return Response.ok(response).build();
+    }
+
 }

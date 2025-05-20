@@ -8,6 +8,7 @@ import java.time.LocalDate;
 
 @RegisterForReflection
 public record CommentResponse(
+        Long id,
         String content,
         LocalDate createdAt,
         User author,

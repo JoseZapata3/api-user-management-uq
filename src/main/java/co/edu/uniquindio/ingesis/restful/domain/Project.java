@@ -24,6 +24,6 @@ public class Project extends PanacheEntity {
     private LocalDateTime createdAt;
     @ManyToOne
     @JoinColumn(name = "owner_id")
-    private ProjectType type;
     private User owner;
+    private ProjectType type;
 }

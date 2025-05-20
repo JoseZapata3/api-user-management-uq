@@ -29,4 +29,6 @@ public class CommentResource {
         CommentResponse response = commentService.createComment(request);
         return Response.status(Response.Status.CREATED).entity(response).build();
     }
+
+
 }

@@ -15,5 +15,5 @@ public interface IProjectService {
 
     void deleteProject(Long id);
 
-    ExecutionResponse createExecution(ExecutionRequest request);
+    ProjectRunResponse runProject(Long id);
 }

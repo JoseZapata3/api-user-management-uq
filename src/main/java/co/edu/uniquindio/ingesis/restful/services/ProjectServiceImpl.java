@@ -95,23 +95,17 @@ public class ProjectServiceImpl implements IProjectService{
     }
 
     @Override
-    @Transactional
-    public ExecutionResponse createExecution(ExecutionRequest request) {
-        String output;
-        String status;
-        String executionId = UUID.randomUUID().toString();
-        String projectId = request.projectId(); // Aquí deberías enlazar el ID real si aplica
+    public ProjectRunResponse runProject(Long id) {
+        Project project = projectRepository.findById(id);
 
-        try {
-            output = CompilerJavaUtil.execute(request.code());
-            status = "SUCCESS";
-        } catch (Exception e) {
-            log.error("Error executing code", e);
-            output = e.getMessage();
-            status = "ERROR";
+        CompilerJavaUtil javaUtil = new CompilerJavaUtil();
+        try{
+            CompilerJavaUtil compilerJavaUtil = new CompilerJavaUtil();
+            String output = compilerJavaUtil.execute(project.getCode());
+            return new ProjectRunResponse(project.getTitle(), output);
+        }catch (Exception e){
+            return new ProjectRunResponse(project.getTitle(), e.toString());
         }
 
-        return new ExecutionResponse(executionId, projectId, status, output);
     }
-
 }

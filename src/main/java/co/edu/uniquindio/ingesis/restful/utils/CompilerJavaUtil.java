@@ -16,8 +16,7 @@ public class CompilerJavaUtil {
             }
             """;
 
-    public static String execute(String code) throws Exception {
-        String sourceCode = String.format(CLASS_TEMPLATE, code);
+    public String execute(String sourceCode) throws Exception {
         Path sourceFilePath = Files.createTempFile(CLASS_NAME, ".java");
 
         // Escribir el código en un archivo temporal
