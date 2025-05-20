@@ -1,17 +1,19 @@
 package co.edu.uniquindio.ingesis.restful.services;
 
-import co.edu.uniquindio.ingesis.restful.dtos.ProjectCreateRequest;
-import co.edu.uniquindio.ingesis.restful.dtos.ProjectResponse;
-import co.edu.uniquindio.ingesis.restful.dtos.ProjectUpdateRequest;
+import co.edu.uniquindio.ingesis.restful.dtos.*;
 import co.edu.uniquindio.ingesis.restful.mappers.ProjectMapper;
 import co.edu.uniquindio.ingesis.restful.domain.Project;
 import co.edu.uniquindio.ingesis.restful.domain.User;
 import co.edu.uniquindio.ingesis.restful.repositories.IProjectRepository;
 import co.edu.uniquindio.ingesis.restful.repositories.IUserRepository;
+import co.edu.uniquindio.ingesis.restful.utils.CompilerJavaUtil;
+import java.util.UUID;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +25,7 @@ public class ProjectServiceImpl implements IProjectService{
     final ProjectMapper projectMapper;
     final IProjectRepository projectRepository;
     final IUserRepository userRepository;
+    final Logger log = LoggerFactory.getLogger(ProjectServiceImpl.class);
 
     @Transactional
     public ProjectResponse createProject(ProjectCreateRequest request) {
@@ -80,6 +83,26 @@ public class ProjectServiceImpl implements IProjectService{
             throw new NotFoundException("Project not found for update with ID: {}"+id);
         }
         projectRepository.delete(project);
+    }
+
+    @Override
+    @Transactional
+    public ExecutionResponse createExecution(ExecutionRequest request) {
+        String output;
+        String status;
+        String executionId = UUID.randomUUID().toString();
+        String projectId = request.projectId(); // Aquí deberías enlazar el ID real si aplica
+
+        try {
+            output = CompilerJavaUtil.execute(request.code());
+            status = "SUCCESS";
+        } catch (Exception e) {
+            log.error("Error executing code", e);
+            output = e.getMessage();
+            status = "ERROR";
+        }
+
+        return new ExecutionResponse(executionId, projectId, status, output);
     }
 
 }

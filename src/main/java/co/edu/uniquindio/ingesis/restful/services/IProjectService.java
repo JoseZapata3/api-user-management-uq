@@ -1,8 +1,6 @@
 package co.edu.uniquindio.ingesis.restful.services;
 
-import co.edu.uniquindio.ingesis.restful.dtos.ProjectCreateRequest;
-import co.edu.uniquindio.ingesis.restful.dtos.ProjectUpdateRequest;
-import co.edu.uniquindio.ingesis.restful.dtos.ProjectResponse;
+import co.edu.uniquindio.ingesis.restful.dtos.*;
 
 import java.util.List;
 
@@ -16,4 +14,6 @@ public interface IProjectService {
     ProjectResponse updateProject(Long id, ProjectUpdateRequest request);
 
     void deleteProject(Long id);
+
+    ExecutionResponse createExecution(ExecutionRequest request);
 }
