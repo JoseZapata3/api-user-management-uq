@@ -63,7 +63,7 @@ public class ProjectResource {
         return Response.noContent().build();
     }
 
-    @POST
+    @GET
     @Path("/run/{id}")
     public Response run(@PathParam("id") Long id) {
         var response = projectService.runProject(id);

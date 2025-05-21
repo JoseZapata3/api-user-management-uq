@@ -123,7 +123,9 @@ services:
       start_period: 30s
 
   notification-service:
-    image: restful-notifications
+    build:
+      context: /home/jose.zapata/Documents/University/APIs-development/restful-notifications/
+      dockerfile: src/main/docker/Dockerfile.jvm
     container_name: notification_service
     user: root
     environment:

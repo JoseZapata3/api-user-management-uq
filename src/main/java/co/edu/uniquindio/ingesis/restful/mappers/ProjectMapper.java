@@ -18,7 +18,7 @@ public interface ProjectMapper {
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     Project parseOf(ProjectCreateRequest request);
 
-    @Mapping(target = "owner", source = "owner.id")
+    //@Mapping(target = "owner", source = "owner.id")
     ProjectResponse toResponse(Project project);
 
     @Mapping(target = "ownerId", source = "owner.id")
