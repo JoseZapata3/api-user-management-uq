@@ -16,4 +16,10 @@ public interface IProjectService {
     void deleteProject(Long id);
 
     ProjectRunResponse runProject(Long id);
+
+    List<ReportResponse> getProjectsReportByAuthor(int page, int size, Long ownerId);
+
+    List<ProjectResponse> getProjectsByAuthor(int page, int size, Long ownerId);
+
+    List<ReportResponse> getProjectsReport(int page, int size);
 }

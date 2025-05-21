@@ -71,6 +71,39 @@ public class ProjectServiceImpl implements IProjectService{
     }
 
     @Transactional
+    public List<ReportResponse> getProjectsReportByAuthor(int page, int size, Long ownerId) {
+        List<Project> projects = Project.<Project>find("owner.id", ownerId)
+                .page(page, size)
+                .list();
+
+        return projects.stream()
+                .map(projectMapper::toReportResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<ProjectResponse> getProjectsByAuthor(int page, int size, Long ownerId) {
+        List<Project> projects = Project.<Project>find("owner.id", ownerId)
+                .page(page, size)
+                .list();
+
+        return projects.stream()
+                .map(projectMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<ReportResponse> getProjectsReport(int page, int size) {
+        List<Project> projects = Project.<Project>findAll()
+                .page(page, size)
+                .list();
+
+        return projects.stream()
+                .map(projectMapper::toReportResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
     public ProjectResponse updateProject(Long id, ProjectUpdateRequest request) {
         Project project = projectRepository.findById(id);
         if( project == null){
