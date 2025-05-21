@@ -80,7 +80,6 @@ public class ProjectResource {
 
             report
                     .columns(
-                            Columns.column("ID", "id", DataTypes.longType()),
                             Columns.column("Title", "title", DataTypes.stringType()),
                             Columns.column("Description", "description", DataTypes.stringType()),
                             Columns.column("Code", "code", DataTypes.stringType()),
@@ -119,7 +118,6 @@ public class ProjectResource {
 
             report
                     .columns(
-                            Columns.column("ID", "id", DataTypes.longType()),
                             Columns.column("Title", "title", DataTypes.stringType()),
                             Columns.column("Description", "description", DataTypes.stringType()),
                             Columns.column("Code", "code", DataTypes.stringType()),
