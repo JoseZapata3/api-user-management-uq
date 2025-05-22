@@ -1,5 +1,7 @@
 package co.edu.uniquindio.ingesis.restful.services;
 
+import co.edu.uniquindio.ingesis.restful.dtos.ActivationMessagePayload;
+import co.edu.uniquindio.ingesis.restful.dtos.CommentMessagePayload;
 import co.edu.uniquindio.ingesis.restful.dtos.CommentPostRequest;
 import co.edu.uniquindio.ingesis.restful.domain.Comment;
 import co.edu.uniquindio.ingesis.restful.domain.User;
@@ -12,11 +14,15 @@ import co.edu.uniquindio.ingesis.restful.repositories.IProjectRepository;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.json.bind.Jsonb;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +43,13 @@ public class CommentServiceImpl implements ICommentService {
 
     @Inject
     IProjectRepository projectRepository;
+
+    @Inject
+    @Channel("comment-emitter")
+    Emitter<byte[]> consumeCommentRequest;
+
+    @Inject
+    Jsonb jsonb;
 
     @Override
     @Transactional
@@ -60,6 +73,38 @@ public class CommentServiceImpl implements ICommentService {
         comment.setProject(project);
 
         commentRepository.persist(comment);
+
+        try {
+            CommentMessagePayload payload = new CommentMessagePayload(
+                    project.getOwner().getEmail(),
+                    comment.getContent(),
+                    project.getTitle(),
+                    comment.getAuthor().getUsername()
+            );
+
+            log.info("Sending activation request: {}", payload);
+
+            String jsonPayload = jsonb.toJson(payload);
+            byte[] messageBytes = jsonPayload.getBytes(StandardCharsets.UTF_8);
+
+            log.info("Sending jsonPayload request: {}", jsonPayload);
+
+            consumeCommentRequest.send(messageBytes)
+                    .whenComplete((success, failure) -> { // Callback para saber si funcionó
+                        if (failure != null) {
+                            log.error("Failed to send activation message to Pulsar for comment {}: {}",
+                                    comment.getContent(), failure.getMessage(), failure);
+                        } else {
+                            log.info("Activation message successfully sent to Pulsar for user {}", comment.getContent());
+                        }
+                    });
+
+        } catch (Exception e) {
+            // Captura cualquier error durante la creación/envío del mensaje
+            log.error("Error preparing or sending Pulsar message for user {}: {}",
+                    comment.getContent(), e.getMessage(), e);
+        }
+
         log.info("Created comment for {}", request);
         return commentMapper.toCommentResponse(comment);
     }

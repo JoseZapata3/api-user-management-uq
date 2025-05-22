@@ -10,7 +10,5 @@ import java.time.LocalDate;
 public record CommentResponse(
         Long id,
         String content,
-        LocalDate createdAt,
-        User author,
-        Project project
+        LocalDate createdAt
 ) {}

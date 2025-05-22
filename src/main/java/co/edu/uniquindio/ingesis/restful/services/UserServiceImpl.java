@@ -78,7 +78,6 @@ public class UserServiceImpl implements IUserService {
             byte[] messageBytes = jsonPayload.getBytes(StandardCharsets.UTF_8);
 
             log.info("Sending jsonPayload request: {}", jsonPayload);
-//           log.info("Sending messageBytes request: {}", messageBytes);
 
             activationRequestEmitter.send(messageBytes)
                     .whenComplete((success, failure) -> { // Callback para saber si funcionó
